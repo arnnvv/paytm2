@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "latest",
+    "@types/mongoose": "^5.11.97",
+    "cors": "^2.8.5",
+    "express": "latest",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.1",
+    "zod": "^3.22.4"
+  }
+}
