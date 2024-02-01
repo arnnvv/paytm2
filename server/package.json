@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "latest",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
     "cors": "^2.8.5",
     "express": "latest",
