@@ -131,7 +131,7 @@ userRouter
         ],
       });
       return res.status(200).json({
-        user: users?.map((user) => ({
+        users: users?.map((user) => ({
           username: user.username,
           firstName: user.firstName,
           lastName: user.lastName,
