@@ -6,12 +6,12 @@ export interface User {
   _id: number;
 }
 
-export const userAtom = atom<User[]>({
+export const usersAtom = atom<User[]>({
   key: "userAtom",
   default: [
     {
-      firstName: "Arnav",
-      lastName: "Sharma",
+      firstName: "",
+      lastName: "",
       _id: 1,
     },
   ],

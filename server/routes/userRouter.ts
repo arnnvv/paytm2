@@ -112,4 +112,37 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
+userRouter
+  .use(authenticate)
+  .route("/bulk")
+  .get(async (req: Request, res: Response) => {
+    const { target } = req.query || "";
+    try {
+      const users = await Users.find({
+        $or: [
+          {
+            firstName: {
+              regex: target,
+            },
+            lastName: {
+              regex: target,
+            },
+          },
+        ],
+      });
+      return res.status(200).json({
+        user: users?.map((user) => ({
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        })),
+      });
+    } catch (error) {
+      console.error(`Error in finding user: ${error}`);
+      return res.status(500).json({
+        message: `Error in finding user: ${error}`,
+      });
+    }
+  });
+
 export default userRouter;
