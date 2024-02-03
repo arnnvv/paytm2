@@ -20,7 +20,6 @@ const Signup = () => {
   const [lastName, setLastName] = useRecoilState(lastNameState);
   const [username, setUsername] = useRecoilState(usernameState);
   const [password, setPassword] = useRecoilState(passwordState);
-  const [, setAuthToken] = useRecoilState(authTokenState);
   const navigate = useNavigate();
   return (
     <div className="bg-slate-300 h-screen flex justify-center">
@@ -61,18 +60,8 @@ const Signup = () => {
                       password: password,
                     },
                   );
-                  setAuthToken(res.data.token);
-                  axios.interceptors.request.use(
-                    (config) => {
-                      if (res.data.token) {
-                        config.headers.Authorization = `Bearer ${res.data.token}`;
-                      }
-                      return config;
-                    },
-                    (error) => {
-                      return Promise.reject(error);
-                    },
-                  );
+                  localStorage.setItem("authToken", res.data.token);
+                  console.log(`HI`);
                   navigate("/dashboard");
                 } catch (e) {
                   console.error(`Error in sigining up: ${e}`);

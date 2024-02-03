@@ -4,11 +4,7 @@ const SubHeading = lazy(() => import("../components/SubHeading.tsx"));
 const InputBox = lazy(() => import("../components/InputBox"));
 const Button = lazy(() => import("../components/Button"));
 const BottomWarning = lazy(() => import("../components/ButtonWarning"));
-import {
-  usernameState,
-  passwordState,
-  authTokenState,
-} from "../store/atoms.ts";
+import { usernameState, passwordState } from "../store/atoms.ts";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 const Signin = () => {
   const [username, setUsername] = useRecoilState(usernameState);
   const [password, setPassword] = useRecoilState(passwordState);
-  const [, setAuthToken] = useRecoilState(authTokenState);
   const navigate = useNavigate();
   return (
     <div className="bg-slate-300 h-screen flex justify-center">
@@ -45,18 +40,7 @@ const Signin = () => {
                       password: password,
                     },
                   );
-                  setAuthToken(response.data.token);
-                  axios.interceptors.request.use(
-                    (config) => {
-                      if (response.data.token) {
-                        config.headers.Authorization = `Bearer ${response.data.token}`;
-                      }
-                      return config;
-                    },
-                    (error) => {
-                      return Promise.reject(error);
-                    },
-                  );
+                  localStorage.setItem("token", response.data.token);
                   navigate("/dashboard");
                 } catch (e) {
                   console.error(`Error in Sigining in :{e}`);
