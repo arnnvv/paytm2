@@ -46,3 +46,8 @@ export const authTokenState = atom({
   key: "authTokenState",
   default: null,
 });
+
+export const amountState = atom({
+  key: "amountState",
+  default: 0,
+});

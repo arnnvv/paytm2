@@ -2,6 +2,8 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signup from "./pages/Signup.tsx";
 import Signin from "./pages/Signin.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
+import SendMoney from "./pages/SendMoney.tsx";
 
 const App = () => {
   return (
