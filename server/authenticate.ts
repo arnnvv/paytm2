@@ -18,7 +18,7 @@ const authenticate = (
       .json({ message: "Access denied. No token provided." });
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.userId = decoded;
+    req.userId = decoded.id;
     next();
   } catch (e) {
     console.error(`Wrong Token Provided: ${e}`);
