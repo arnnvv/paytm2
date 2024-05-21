@@ -1,0 +1,22 @@
+FROM oven/bun:1.1
+
+WORKDIR /usr/src/app
+
+COPY package.json bun.lockb turbo.json tsconfig.json ./
+
+COPY apps ./apps
+COPY packages ./packages
+
+RUN bun install
+
+WORKDIR /usr/src/app/packages/db
+RUN bunx prisma generate --no-engine
+
+WORKDIR /usr/src/app
+
+RUN bun run build
+
+WORKDIR /usr/src/app/apps/userApp/
+
+CMD ["bun", "run", "start"]
+

@@ -1,0 +1,40 @@
+{
+  "name": "paytm",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.1",
+    "turbo": "^1.13.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.0.35",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "@prisma/client": "latest",
+    "@prisma/extension-accelerate": "latest",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "latest",
+    "bcrypt": "latest",
+    "esbuild": "latest",
+    "express": "latest",
+    "next-auth": "latest",
+    "prisma": "latest",
+    "recoil": "latest",
+    "valibot": "latest"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@repo/validate",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    "./client": "./index.ts"
+  },
+  "dependencies": {
+    "valibot": "latest"
+  }
+}
