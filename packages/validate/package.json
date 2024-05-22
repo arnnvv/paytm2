@@ -12,6 +12,6 @@
     "./client": "./index.ts"
   },
   "dependencies": {
-    "valibot": "latest"
+    "zod": "latest"
   }
 }

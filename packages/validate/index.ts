@@ -1,14 +1,20 @@
-import * as v from "valibot";
+import { ZodObject, ZodOptional, ZodString, z } from "zod";
 
-const signUpIn = v.object({
-  name: v.optional(v.string()),
-  email: v.optional(v.pipe(v.string(), v.email())),
-  number: v.pipe(v.string(), v.length(10)),
-  password: v.pipe(v.string(), v.minLength(10)),
+const signUpIn: ZodObject<{
+  name: ZodOptional<ZodString>;
+  email: ZodOptional<ZodString>;
+  number: ZodString;
+  password: ZodString;
+}> = z.object({
+  name: z.optional(z.string()),
+  email: z.optional(z.string().email()),
+  number: z.string().length(10),
+  password: z.string().min(10),
 });
-export type SignUpIn = v.InferInput<typeof signUpIn>;
 
-export const validate = (data: SignUpIn) => {
-  const result = v.safeParse(signUpIn, data);
+export type SignUpIn = z.infer<typeof signUpIn>;
+
+export const validate = (data: SignUpIn): boolean => {
+  const result = signUpIn.safeParse(data);
   return result.success;
 };

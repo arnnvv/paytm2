@@ -35,6 +35,6 @@
     "next-auth": "latest",
     "prisma": "latest",
     "recoil": "latest",
-    "valibot": "latest"
+    "zod": "latest"
   }
 }
