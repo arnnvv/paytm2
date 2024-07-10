@@ -8,16 +8,16 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-const authEnum = pgEnum("authEnum", ["Google", "Github"]);
-const onRampStatusEnum = pgEnum("onRampStatusEnum", [
+export const createTable = pgTableCreator(
+  (name: string): string => `paytm_${name}`,
+);
+
+export const authEnum = pgEnum("authEnum", ["Google", "Github"]);
+export const onRampStatusEnum = pgEnum("onRampStatusEnum", [
   "Success",
   "Failure",
   "Processing",
 ]);
-
-export const createTable = pgTableCreator(
-  (name: string): string => `paytm_${name}`,
-);
 
 export const users = createTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -36,7 +36,7 @@ export const merchant = createTable("merchant", {
 
 export const onRampTransaction = createTable("onramp_transaction", {
   id: uuid("id").primaryKey().defaultRandom(),
-  status: onRampStatusEnum("status").notNull(),
+  status: onRampStatusEnum("onRampStatusEnum").notNull(),
   token: varchar("token").unique().notNull(),
   provider: varchar("provider").notNull(),
   amount: integer("amount").notNull(),
