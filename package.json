@@ -5,7 +5,11 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:generate": "cd packages/db && drizzle-kit generate",
+    "db:migrate": "cd packages/db && drizzle-kit migrate",
+    "db:push": "cd packages/db && drizzle-kit push",
+    "db:studio": "cd packages/db && drizzle-kit studio"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
