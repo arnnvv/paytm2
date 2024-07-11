@@ -1,5 +1,5 @@
 {
-  "id": "f7f35f5e-8fa3-481a-b473-7aa93767db26",
+  "id": "07dc60b5-7a24-451d-a47d-feaeea564582",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,12 +15,6 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
         "amount": {
           "name": "amount",
           "type": "integer",
@@ -30,6 +24,12 @@
         "locked": {
           "name": "locked",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         }
@@ -51,15 +51,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "paytm_balance_user_id_unique": {
-          "name": "paytm_balance_user_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "public.paytm_merchant": {
       "name": "paytm_merchant",
@@ -149,7 +141,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         }
@@ -206,13 +198,13 @@
         },
         "from_user_id": {
           "name": "from_user_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
         "to_user_id": {
           "name": "to_user_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         }
@@ -249,16 +241,57 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "public.paytm_sessions": {
+      "name": "paytm_sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(21)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "paytm_sessions_user_id_paytm_users_id_fk": {
+          "name": "paytm_sessions_user_id_paytm_users_id_fk",
+          "tableFrom": "paytm_sessions",
+          "tableTo": "paytm_users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.paytm_users": {
       "name": "paytm_users",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "varchar(21)",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -268,19 +301,19 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "number": {
           "name": "number",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "password": {
           "name": "password",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         }

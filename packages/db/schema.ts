@@ -54,7 +54,7 @@ export const onRampTransaction = createTable("onramp_transaction", {
   provider: varchar("provider").notNull(),
   amount: integer("amount").notNull(),
   startTime: timestamp("start_time").notNull(),
-  userId: uuid("user_id")
+  userId: varchar("user_id")
     .notNull()
     .references(() => users.id),
 });
@@ -63,7 +63,7 @@ export const balance = createTable("balance", {
   id: uuid("id").primaryKey().defaultRandom(),
   amount: integer("amount").notNull(),
   locked: integer("locked").notNull(),
-  userId: uuid("user_id")
+  userId: varchar("user_id")
     .notNull()
     .references(() => users.id),
 });
@@ -72,10 +72,10 @@ export const p2pTransfer = createTable("p2p_transfer", {
   id: uuid("id").primaryKey().defaultRandom(),
   amount: integer("amount").notNull(),
   timestamp: timestamp("timestamp").notNull(),
-  fromUserId: uuid("from_user_id")
+  fromUserId: varchar("from_user_id")
     .notNull()
     .references(() => users.id),
-  toUserId: uuid("to_user_id")
+  toUserId: varchar("to_user_id")
     .notNull()
     .references(() => users.id),
 });
