@@ -8,6 +8,13 @@
       "when": 1720646540591,
       "tag": "0000_wandering_annihilus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1720727796404,
+      "tag": "0001_premium_chameleon",
+      "breakpoints": true
     }
   ]
 }
