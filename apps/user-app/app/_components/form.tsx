@@ -7,7 +7,7 @@ export interface ActionResult {
 
 import { ReactNode } from "react";
 
-export const Form = ({
+export default ({
   children,
   action,
 }: {

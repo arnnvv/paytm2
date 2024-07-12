@@ -1,9 +1,9 @@
 import lucia, { validateRequest } from "../lib/auth";
 import { redirect } from "next/navigation";
-import { ActionResult, Form } from "./_components/form";
+import Form, { ActionResult } from "./_components/form";
 import { cookies } from "next/headers";
 
-export default async function Home(): Promise<JSX.Element> {
+export default async (): Promise<JSX.Element> => {
   const { user } = await validateRequest();
   if (!user) {
     return redirect("/login");
@@ -32,4 +32,4 @@ export default async function Home(): Promise<JSX.Element> {
       </Form>
     </>
   );
-}
+};

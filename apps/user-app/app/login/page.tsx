@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import lucia, { validateRequest } from "../../lib/auth";
-import { ActionResult, Form } from "../_components/form";
+import Form, { ActionResult } from "../_components/form";
 import Link from "next/link";
 import { validatedEmail } from "@repo/validate/client";
 import { db } from "@repo/db/client";
