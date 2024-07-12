@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.0.7",
+    "@node-rs/argon2": "^1.8.3",
     "@repo/ui": "workspace:*",
     "lucia": "^3.2.0",
     "next": "15.0.0-rc.0",
@@ -20,6 +21,7 @@
     "@repo/db": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/validate": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
