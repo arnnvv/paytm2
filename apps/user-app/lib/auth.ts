@@ -20,9 +20,15 @@ const lucia = new Lucia(adapter, {
     name: string | null;
     email: string;
     password: string;
-  }) => {
+  }): {
+    name: string | null;
+    email: string;
+    number: string | null;
+  } => {
     return {
       name: attributes.name,
+      email: attributes.email,
+      number: attributes.number,
     };
   },
   sessionExpiresIn: new TimeSpan(30, "d"),

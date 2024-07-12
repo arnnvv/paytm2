@@ -5,8 +5,8 @@ import Link from "next/link";
 import { validatedEmail } from "@repo/validate/client";
 import { db } from "@repo/db/client";
 import { Users } from "@repo/db/schema";
-import { verify } from "@node-rs/argon2";
 import { cookies } from "next/headers";
+import { LegacyScrypt } from "lucia";
 
 export default async (): Promise<JSX.Element> => {
   const { user } = await validateRequest();
@@ -32,15 +32,9 @@ export default async (): Promise<JSX.Element> => {
               where: (users, { eq }) => eq(users.email, email),
             })) as Users | undefined;
             if (!existingUser) return { error: "User not found" };
-            const validPassword = await verify(
+            const validPassword = await new LegacyScrypt().verify(
               existingUser.password,
               password,
-              {
-                memoryCost: 19456,
-                timeCost: 2,
-                outputLen: 32,
-                parallelism: 1,
-              },
             );
             if (!validPassword) return { error: "Incorrect Password" };
             const session = await lucia.createSession(existingUser.id, {});

@@ -2,8 +2,7 @@ import { redirect } from "next/navigation";
 import lucia, { validateRequest } from "../../lib/auth";
 import Form, { ActionResult } from "../_components/form";
 import Link from "next/link";
-import { hash } from "@node-rs/argon2";
-import { generateId } from "lucia";
+import { generateId, LegacyScrypt } from "lucia";
 import { Users, users } from "@repo/db/schema";
 import { db } from "@repo/db/client";
 import { validatedEmail } from "@repo/validate/client";
@@ -28,14 +27,9 @@ export default async (): Promise<JSX.Element> => {
             password.length > 64
           )
             return { error: "Invalid password" };
-          const hashedPassword = await hash(password, {
-            memoryCost: 19456,
-            timeCost: 2,
-            outputLen: 32,
-            parallelism: 1,
-          });
           const id = generateId(10);
           try {
+            const hashedPassword = await new LegacyScrypt().hash(password);
             const existingUser = (await db.query.users.findFirst({
               where: (users, { eq }) => eq(users.email, email),
             })) as Users | undefined;

@@ -10,7 +10,7 @@ export default async (): Promise<JSX.Element> => {
   }
   return (
     <>
-      <h1>Hi, {user.name}!</h1>
+      <h1>Hi, {user.email}!</h1>
       <p>Your user ID is {user.id}.</p>
       <Form
         action={async (): Promise<ActionResult> => {
