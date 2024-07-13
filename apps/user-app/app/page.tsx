@@ -1,8 +1,8 @@
 import lucia, { validateRequest } from "../lib/auth";
 import { redirect } from "next/navigation";
-import Form, { ActionResult } from "./_components/form";
 import { cookies } from "next/headers";
 import { Button } from "@repo/ui/components/ui/button";
+import FormComponent, { ActionResult } from "./_components/FormComponent";
 
 export default async (): Promise<JSX.Element> => {
   const { user } = await validateRequest();
@@ -13,7 +13,7 @@ export default async (): Promise<JSX.Element> => {
     <>
       <h1>Hi, {user.email}!</h1>
       <p>Your user ID is {user.id}.</p>
-      <Form
+      <FormComponent
         action={async (): Promise<ActionResult> => {
           "use server";
           const { session } = await validateRequest();
@@ -30,7 +30,7 @@ export default async (): Promise<JSX.Element> => {
         }}
       >
         <Button>Sign out</Button>
-      </Form>
+      </FormComponent>
     </>
   );
 };

@@ -1,11 +1,10 @@
 "use client";
 import { useFormState } from "react-dom";
+import { ReactNode } from "react";
 
 export interface ActionResult {
   error: string | null;
 }
-
-import { ReactNode } from "react";
 
 export default ({
   children,
