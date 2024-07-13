@@ -3,8 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./card": "./src/card.tsx",
-    "./code": "./src/code.tsx",
     "./globals.css": "./src/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./tailwind.config": "./tailwind.config.ts",

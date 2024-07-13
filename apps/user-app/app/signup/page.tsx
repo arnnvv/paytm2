@@ -1,10 +1,5 @@
 import { redirect } from "next/navigation";
-import lucia, { validateRequest } from "../../lib/auth";
-import { generateId, LegacyScrypt } from "lucia";
-import { Users, users } from "@repo/db/schema";
-import { db } from "@repo/db/client";
-import { validatedEmail } from "@repo/validate/client";
-import { cookies } from "next/headers";
+import { validateRequest } from "../../lib/auth";
 import Link from "next/link";
 import { Button } from "@repo/ui/components/ui/button";
 import { Input } from "@repo/ui/components/ui/input";
@@ -16,7 +11,8 @@ import {
   CardContent,
   CardFooter,
 } from "@repo/ui/components/ui/card";
-import FormComponent, { ActionResult } from "../_components/FormComponent";
+import FormComponent from "../_components/FormComponent";
+import { signUpAction } from "../../actions";
 
 export default async (): Promise<JSX.Element> => {
   const { user } = await validateRequest();
@@ -31,48 +27,7 @@ export default async (): Promise<JSX.Element> => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <FormComponent
-            action={async (
-              _: any,
-              formData: FormData,
-            ): Promise<ActionResult> => {
-              "use server";
-              const email = formData.get("email");
-              if (typeof email !== "string")
-                return { error: "Email is required" };
-              if (!validatedEmail(email)) return { error: "Invalid email" };
-              const password = formData.get("password");
-              if (
-                typeof password !== "string" ||
-                password.length < 8 ||
-                password.length > 64
-              )
-                return { error: "Invalid password" };
-              const id = generateId(10);
-              try {
-                const hashedPassword = await new LegacyScrypt().hash(password);
-                const existingUser = (await db.query.users.findFirst({
-                  where: (users, { eq }) => eq(users.email, email),
-                })) as Users | undefined;
-                if (existingUser) return { error: "User already exists" };
-                await db.insert(users).values({
-                  id,
-                  password: hashedPassword,
-                  email,
-                });
-                const session = await lucia.createSession(id, {});
-                const sessionCookie = lucia.createSessionCookie(session.id);
-                cookies().set(
-                  sessionCookie.name,
-                  sessionCookie.value,
-                  sessionCookie.attributes,
-                );
-              } catch {
-                throw new Error("Unexpected error");
-              }
-              return redirect("/");
-            }}
-          >
+          <FormComponent action={signUpAction}>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
