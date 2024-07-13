@@ -2,6 +2,7 @@ import lucia, { validateRequest } from "../lib/auth";
 import { redirect } from "next/navigation";
 import Form, { ActionResult } from "./_components/form";
 import { cookies } from "next/headers";
+import { Button } from "@repo/ui/components/ui/button";
 
 export default async (): Promise<JSX.Element> => {
   const { user } = await validateRequest();
@@ -28,7 +29,7 @@ export default async (): Promise<JSX.Element> => {
           return redirect("/login");
         }}
       >
-        <button>Sign out</button>
+        <Button>Sign out</Button>
       </Form>
     </>
   );

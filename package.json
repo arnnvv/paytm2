@@ -5,12 +5,15 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "ui:add": "pnpm --filter @repo/ui ui:add"
   },
   "devDependencies": {
     "prettier": "^3.3.2",
     "turbo": "^2.0.6",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
   },
   "packageManager": "pnpm@8.15.6",
   "engines": {
