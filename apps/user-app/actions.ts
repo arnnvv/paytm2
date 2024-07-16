@@ -117,6 +117,16 @@ export const getTransactions = async (
   id: string | undefined,
 ): Promise<Transaction[]> => {
   if (!id) throw new Error("User not found");
-  const transactions: Transaction[] = [];
-  return transactions;
+  try {
+    const transactions: Transaction[] | undefined =
+      await db.query.onRampTransaction.findMany({
+        where: (onRampTransaction, { eq }) => eq(onRampTransaction.userId, id),
+        orderBy: (onRampTransaction, { desc }) => [
+          desc(onRampTransaction.startTime),
+        ],
+      });
+    return transactions;
+  } catch {
+    throw new Error("Something went wrong");
+  }
 };
