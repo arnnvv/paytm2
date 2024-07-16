@@ -59,6 +59,8 @@ export const onRampTransaction = createTable("onramp_transaction", {
     .references(() => users.id),
 });
 
+export type Transaction = typeof onRampTransaction.$inferSelect;
+
 export const balance = createTable("balance", {
   id: uuid("id").primaryKey().defaultRandom(),
   amount: integer("amount").notNull(),

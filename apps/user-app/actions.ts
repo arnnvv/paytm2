@@ -3,13 +3,12 @@
 import { validatedEmail } from "@repo/validate/client";
 import { ActionResult } from "./app/_components/FormComponent";
 import { db } from "@repo/db/client";
-import { Balance, users, Users } from "@repo/db/schema";
+import { Balance, Transaction, users, Users } from "@repo/db/schema";
 import { LegacyScrypt } from "lucia";
 import lucia, { validateRequest } from "./lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { generateId } from "lucia";
-import { Transaction } from "./app/_components/Onramptransaction";
 
 export const logInAction = async (
   _: any,

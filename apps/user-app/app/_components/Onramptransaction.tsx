@@ -1,3 +1,4 @@
+import { Transaction } from "@repo/db/schema";
 import {
   Card,
   CardContent,
@@ -5,13 +6,6 @@ import {
   CardTitle,
 } from "@repo/ui/components/ui/card";
 import { ScrollArea } from "@repo/ui/components/ui/scroll-area";
-
-export interface Transaction {
-  time: Date;
-  amount: number;
-  status: "COMPLETED" | "PENDING" | "FAILED";
-  provider: string;
-}
 
 export default ({
   transactions,
@@ -60,7 +54,7 @@ export default ({
                   <div>
                     <div className="font-medium">Received INR</div>
                     <div className="text-sm text-muted-foreground">
-                      {formatDate(t.time)}
+                      {formatDate(t.startTime)}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       via {t.provider}
