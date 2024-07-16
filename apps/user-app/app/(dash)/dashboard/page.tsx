@@ -7,9 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/ui/card";
-import FormComponent from "../../_components/FormComponent";
-import { signOutAction } from "../../../actions";
-import { Button } from "@repo/ui/components/ui/button";
 
 export default async (): Promise<JSX.Element> => {
   const { user } = await validateRequest();
@@ -29,11 +26,6 @@ export default async (): Promise<JSX.Element> => {
             <h2 className="text-xl font-semibold">Hi, {user.email}!</h2>
             <p className="text-sm text-slate-500">Your user ID is {user.id}.</p>
           </div>
-          <FormComponent action={signOutAction}>
-            <Button className="w-full" variant="destructive">
-              Sign out
-            </Button>
-          </FormComponent>
         </CardContent>
         <CardFooter className="text-center text-sm text-slate-500">
           Thank you for using our service!
