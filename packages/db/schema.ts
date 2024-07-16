@@ -68,6 +68,8 @@ export const balance = createTable("balance", {
     .references(() => users.id),
 });
 
+export type Balance = typeof balance.$inferSelect;
+
 export const p2pTransfer = createTable("p2p_transfer", {
   id: uuid("id").primaryKey().defaultRandom(),
   amount: integer("amount").notNull(),

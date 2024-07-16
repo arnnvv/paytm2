@@ -3,12 +3,13 @@
 import { validatedEmail } from "@repo/validate/client";
 import { ActionResult } from "./app/_components/FormComponent";
 import { db } from "@repo/db/client";
-import { users, Users } from "@repo/db/schema";
+import { Balance, users, Users } from "@repo/db/schema";
 import { LegacyScrypt } from "lucia";
 import lucia, { validateRequest } from "./lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { generateId } from "lucia";
+import { Transaction } from "./app/_components/Onramptransaction";
 
 export const logInAction = async (
   _: any,
@@ -97,4 +98,26 @@ export const signOutAction = async (): Promise<ActionResult> => {
     sessionCookie.attributes,
   );
   return redirect("/login");
+};
+
+export const getBalance = async (
+  id: string | undefined,
+): Promise<Balance | undefined> => {
+  if (!id) throw new Error("User not found");
+  try {
+    const balance = await db.query.balance.findFirst({
+      where: (balance, { eq }) => eq(balance.userId, id),
+    });
+    return balance;
+  } catch {
+    throw new Error("Something went wrong");
+  }
+};
+
+export const getTransactions = async (
+  id: string | undefined,
+): Promise<Transaction[]> => {
+  if (!id) throw new Error("User not found");
+  const transactions: Transaction[] = [];
+  return transactions;
 };

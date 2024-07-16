@@ -1,16 +1,14 @@
+import { Balance } from "@repo/db/schema";
+import { validateRequest } from "../../../lib/auth";
 import AddMoneyCard from "../../_components/AddMoneyCard";
 import BalanceCard from "../../_components/BalanceCard";
-import Onramptransaction, {
-  Transaction,
-} from "../../_components/Onramptransaction";
-
-const getOnRampTransactions = async (): Promise<Transaction[]> => {
-  const transactions: Transaction[] = [];
-  return transactions;
-};
+import Onramptransaction from "../../_components/Onramptransaction";
+import { getBalance, getTransactions } from "../../../actions";
 
 export default async (): Promise<JSX.Element> => {
-  const transactions = await getOnRampTransactions();
+  const { user } = await validateRequest();
+  const balance: Balance | undefined = await getBalance(user?.id);
+  const transactions = await getTransactions(user?.id);
 
   return (
     <div className="w-screen">
@@ -22,7 +20,7 @@ export default async (): Promise<JSX.Element> => {
           <AddMoneyCard />
         </div>
         <div>
-          <BalanceCard amount={1000} locked={100} />
+          <BalanceCard amount={balance?.amount} locked={balance?.locked} />
           <div className="pt-4">
             <Onramptransaction transactions={transactions} />
           </div>
