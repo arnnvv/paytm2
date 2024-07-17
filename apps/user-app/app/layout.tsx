@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@repo/ui/lib/utils";
 import AppbarComponent from "./_components/AppbarComponent";
+import Providers from "./Providers";
 
 export const metadata: Metadata = {
   title: "PAYTM",
@@ -27,8 +28,10 @@ export default ({
         fontSans.variable,
       )}
     >
-      <AppbarComponent />
-      {children}
+      <Providers>
+        <AppbarComponent />
+        {children}
+      </Providers>
     </body>
   </html>
 );

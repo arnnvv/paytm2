@@ -3,12 +3,19 @@
 import { validatedEmail } from "@repo/validate/client";
 import { ActionResult } from "./app/_components/FormComponent";
 import { db } from "@repo/db/client";
-import { Balance, Transaction, users, Users } from "@repo/db/schema";
+import {
+  Balance,
+  onRampTransaction,
+  Transaction,
+  users,
+  Users,
+} from "@repo/db/schema";
 import { LegacyScrypt } from "lucia";
 import lucia, { validateRequest } from "./lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { generateId } from "lucia";
+import { v4 } from "uuid";
 
 export const logInAction = async (
   _: any,
@@ -126,6 +133,32 @@ export const getTransactions = async (
         ],
       });
     return transactions;
+  } catch {
+    throw new Error("Something went wrong");
+  }
+};
+
+export const createOnRampTransaction = async (
+  provider: string,
+  amount: number,
+): Promise<{ message: string; token: string }> => {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("User not found");
+  try {
+    const token = (Math.random() * 1000).toString();
+    await db.insert(onRampTransaction).values({
+      id: v4(),
+      status: "Processing",
+      startTime: new Date(),
+      provider,
+      token,
+      userId: user.id,
+      amount: amount * 100,
+    });
+    return {
+      message: "Transaction created",
+      token,
+    };
   } catch {
     throw new Error("Something went wrong");
   }

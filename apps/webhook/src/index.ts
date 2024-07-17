@@ -9,12 +9,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 app.use(cors());
 
 app.post("/hdfcWebhook", async (c) => {
-  const body = await c.req.json();
-  const paymentInformation = {
-    token: body.token,
-    userId: body.user_identifier,
-    amount: body.amount,
-  };
+  const { token, user_identifier, amount } = await c.req.json();
   try {
   } catch (error) {
     throw new Error("Error while processing webhook");

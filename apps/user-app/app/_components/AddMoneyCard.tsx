@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@repo/ui/components/ui/select";
 import { ChangeEvent, useState } from "react";
+import { createOnRampTransaction } from "../../actions";
 
 const SUPPORTED_BANKS = [
   {
@@ -29,9 +30,9 @@ const SUPPORTED_BANKS = [
 ];
 
 export default (): JSX.Element => {
-  const [amount, setAmount] = useState<string | undefined>("");
-  const [selectedBank, setSelectedBank] = useState<string | undefined>(
-    SUPPORTED_BANKS[0]?.name,
+  const [amount, setAmount] = useState<number>(0);
+  const [selectedBank, setSelectedBank] = useState<string>(
+    SUPPORTED_BANKS[0]?.name ?? "",
   );
   const redirectUrl =
     SUPPORTED_BANKS.find(
@@ -53,7 +54,7 @@ export default (): JSX.Element => {
               placeholder="Enter amount"
               value={amount}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setAmount(e.target.value)
+                setAmount(Number(e.target.value))
               }
             />
           </div>
@@ -78,8 +79,11 @@ export default (): JSX.Element => {
             </Select>
           </div>
           <Button
-            onClick={() => {
-              if (amount && redirectUrl) window.location.href = redirectUrl;
+            onClick={async () => {
+              if (amount && redirectUrl) {
+                await createOnRampTransaction(selectedBank, amount);
+                window.location.href = redirectUrl || "";
+              }
             }}
           >
             Add Money
