@@ -9,11 +9,11 @@
     "ui:add": "pnpm --filter @repo/ui ui:add"
   },
   "devDependencies": {
-    "prettier": "^3.3.2",
-    "turbo": "^2.0.6",
-    "typescript": "^5.5.3",
     "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.7",
+    "typescript": "^5.5.3"
   },
   "packageManager": "pnpm@8.15.6",
   "engines": {
