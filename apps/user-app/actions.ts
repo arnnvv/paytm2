@@ -2,10 +2,12 @@
 
 import { validatedEmail } from "@repo/validate/client";
 import { ActionResult } from "./app/_components/FormComponent";
-import { db } from "@repo/db/client";
+import { db, eq } from "@repo/db/client";
 import {
+  balance,
   Balance,
   onRampTransaction,
+  p2pTransfer,
   Transaction,
   users,
   Users,
@@ -161,5 +163,65 @@ export const createOnRampTransaction = async (
     };
   } catch {
     throw new Error("Something went wrong");
+  }
+};
+
+export const createP2PTransfer = async (toEmail: string, amount: number) => {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("User not found");
+  const toExists = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.email, toEmail),
+  });
+  if (!toExists) return { error: "User not found" };
+  try {
+    await db.transaction(async (tx) => {
+      const receiver = await tx.query.users.findFirst({
+        where: eq(users.email, toEmail),
+      });
+
+      if (!receiver) return { error: "User not found" };
+
+      const senderBalance = await tx.query.balance.findFirst({
+        where: eq(balance.userId, user.id),
+      });
+
+      if (!senderBalance || senderBalance.amount < amount)
+        return { error: "Insufficient funds" };
+
+      const receiverBalance = await tx.query.balance.findFirst({
+        where: eq(balance.userId, receiver.id),
+      });
+
+      await tx
+        .update(balance)
+        .set({ amount: senderBalance.amount - amount })
+        .where(eq(balance.userId, user.id));
+
+      if (receiverBalance) {
+        await tx
+          .update(balance)
+          .set({ amount: receiverBalance.amount + amount })
+          .where(eq(balance.userId, receiver.id));
+      } else {
+        await tx.insert(balance).values({
+          amount: amount,
+          locked: 0,
+          userId: receiver.id,
+        });
+      }
+
+      await tx.insert(p2pTransfer).values({
+        amount: amount,
+        timestamp: new Date(),
+        fromUserId: user.id,
+        toUserId: receiver.id,
+      });
+
+      return {
+        message: `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
+      };
+    });
+  } catch (e) {
+    throw new Error(`Something went wrong: ${e}`);
   }
 };
