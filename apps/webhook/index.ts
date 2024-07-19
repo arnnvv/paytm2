@@ -1,14 +1,15 @@
+import "./global-polyfill";
+import { serve } from "@hono/node-server";
 import { Context, Hono } from "hono";
-import { handle } from "hono/vercel";
+import { db, eq } from "@repo/db/client";
 import { cors } from "hono/cors";
-import { db, eq } from "@repo/db";
 import { balance, onRampTransaction } from "@repo/db/schema";
 
-export const config = {
-  runtime: "edge",
-};
+interface Bindings {
+  DATABASE_URL: string;
+}
 
-const app = new Hono().basePath("/api");
+const app = new Hono<{ Bindings: Bindings }>();
 app.use(cors());
 
 app.post("/hdfcWebhook", async (c: Context) => {
@@ -46,4 +47,10 @@ app.post("/hdfcWebhook", async (c: Context) => {
   }
 });
 
-export default handle(app);
+const port: number = 3002;
+console.log(`Server is running on port ${port}`);
+
+serve({
+  fetch: app.fetch,
+  port,
+});

@@ -1,4 +1,4 @@
 ```
 pnpm i
-pnpm start
+pnpm dev
 ```

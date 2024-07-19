@@ -1,0 +1,9 @@
+//Since in packages I used drizzle client taht takes secret via process.env and hono dosen't support it
+//should never be done in production, just a hot fix
+if (typeof process === 'undefined') {
+  globalThis.process = { env: {} };
+}
+if (typeof process.env === 'undefined') {
+  process.env = {};
+}
+process.env.DATABASE_URL = "your-database-url";
