@@ -1,13 +1,12 @@
-import "./global-polyfill";
-import { serve } from "@hono/node-server";
+import "../global-polyfill";
 import { Context, Hono } from "hono";
 import { db, eq } from "@repo/db/client";
 import { cors } from "hono/cors";
 import { balance, onRampTransaction } from "@repo/db/schema";
 
-interface Bindings {
-  DATABASE_URL: string;
-}
+type Bindings = {
+  [key in keyof CloudflareBindings]: CloudflareBindings[key];
+};
 
 const app = new Hono<{ Bindings: Bindings }>();
 app.use(cors());
@@ -47,10 +46,4 @@ app.post("/hdfcWebhook", async (c: Context) => {
   }
 });
 
-const port: number = 3002;
-console.log(`Server is running on port ${port}`);
-
-serve({
-  fetch: app.fetch,
-  port,
-});
+export default app;
