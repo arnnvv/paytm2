@@ -9,6 +9,7 @@ import {
   onRampTransaction,
   p2pTransfer,
   Transaction,
+  Transfer,
   users,
   Users,
 } from "@repo/db/schema";
@@ -172,21 +173,21 @@ export const createP2PTransfer = async (toEmail: string, amount: number) => {
   const toExists = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.email, toEmail),
   });
-  if (!toExists) return { error: "User not found" };
+  if (!toExists) throw new Error("User not found");
   try {
     await db.transaction(async (tx) => {
       const receiver = await tx.query.users.findFirst({
         where: eq(users.email, toEmail),
       });
 
-      if (!receiver) return { error: "User not found" };
+      if (!receiver) throw new Error("User not found");
 
       const senderBalance = await tx.query.balance.findFirst({
         where: eq(balance.userId, user.id),
       });
 
       if (!senderBalance || senderBalance.amount < amount)
-        return { error: "Insufficient funds" };
+        throw new Error("Insufficient balance");
 
       const receiverBalance = await tx.query.balance.findFirst({
         where: eq(balance.userId, receiver.id),
@@ -217,9 +218,32 @@ export const createP2PTransfer = async (toEmail: string, amount: number) => {
         toUserId: receiver.id,
       });
 
+      console.log(
+        `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
+      );
       return {
         message: `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
       };
+    });
+  } catch (e) {
+    throw new Error(`Something went wrong: ${e}`);
+  }
+};
+
+export const getP2PTransfers = async (): Promise<Transfer[]> => {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("User not found");
+  try {
+    const transfersStent: Transfer[] = await db.query.p2pTransfer.findMany({
+      where: (p2pTransfer, { eq }) => eq(p2pTransfer.fromUserId, user.id),
+    });
+    const transfersReceived: Transfer[] = await db.query.p2pTransfer.findMany({
+      where: (p2pTransfer, { eq }) => eq(p2pTransfer.toUserId, user.id),
+    });
+    const allTransfers: Transfer[] = [...transfersStent, ...transfersReceived];
+
+    return allTransfers.sort((a: Transfer, b: Transfer): number => {
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
     });
   } catch (e) {
     throw new Error(`Something went wrong: ${e}`);

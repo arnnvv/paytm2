@@ -83,3 +83,5 @@ export const p2pTransfer = createTable("p2p_transfer", {
     .notNull()
     .references(() => users.id),
 });
+
+export type Transfer = typeof p2pTransfer.$inferSelect;

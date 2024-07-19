@@ -51,7 +51,7 @@ export default (): JSX.Element => {
             <Button
               className="w-full"
               type="submit"
-              onClick={async (): Promise<{ error: string } | undefined> => {
+              onClick={async () => {
                 if (!email || !amount)
                   return { error: "Please fill in all fields" };
                 const numAmount: number = Number(amount);
@@ -62,10 +62,7 @@ export default (): JSX.Element => {
                   toast.error("Amount must be a positive number");
                 try {
                   toast.message("Sending");
-                  const result = await createP2PTransfer(email, numAmount);
-                  if (result === undefined)
-                    toast.error("An error occurred while sending money");
-                  return result;
+                  await createP2PTransfer(email, numAmount);
                 } catch (error) {
                   return { error: "An error occurred while sending money" };
                 }
