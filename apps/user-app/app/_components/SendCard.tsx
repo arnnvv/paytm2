@@ -62,7 +62,7 @@ export default (): JSX.Element => {
                   toast.error("Amount must be a positive number");
                 try {
                   toast.message("Sending");
-                  await createP2PTransfer(email, numAmount);
+                  await createP2PTransfer(email, numAmount * 100);
                 } catch (error) {
                   return { error: "An error occurred while sending money" };
                 }
