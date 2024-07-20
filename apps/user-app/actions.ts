@@ -2,7 +2,7 @@
 
 import { validatedEmail } from "@repo/validate/client";
 import { ActionResult } from "./app/_components/FormComponent";
-import { db, eq } from "@repo/db/client";
+import { db, eq, pool } from "@repo/db/client";
 import {
   balance,
   Balance,
@@ -174,59 +174,66 @@ export const createP2PTransfer = async (toEmail: string, amount: number) => {
     where: (users, { eq }) => eq(users.email, toEmail),
   });
   if (!toExists) throw new Error("User not found");
+  let connection;
   try {
-    await db.transaction(async (tx) => {
-      const receiver = await tx.query.users.findFirst({
-        where: eq(users.email, toEmail),
-      });
+    connection = await pool.connect();
+    await connection.query("BEGIN;");
 
-      if (!receiver) throw new Error("User not found");
-
-      const senderBalance = await tx.query.balance.findFirst({
-        where: eq(balance.userId, user.id),
-      });
-
-      if (!senderBalance || senderBalance.amount < amount)
-        throw new Error("Insufficient balance");
-
-      const receiverBalance = await tx.query.balance.findFirst({
-        where: eq(balance.userId, receiver.id),
-      });
-
-      await tx
-        .update(balance)
-        .set({ amount: senderBalance.amount - amount })
-        .where(eq(balance.userId, user.id));
-
-      if (receiverBalance) {
-        await tx
-          .update(balance)
-          .set({ amount: receiverBalance.amount + amount })
-          .where(eq(balance.userId, receiver.id));
-      } else {
-        await tx.insert(balance).values({
-          amount: amount,
-          locked: 0,
-          userId: receiver.id,
-        });
-      }
-
-      await tx.insert(p2pTransfer).values({
-        amount: amount,
-        timestamp: new Date(),
-        fromUserId: user.id,
-        toUserId: receiver.id,
-      });
-
-      console.log(
-        `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
-      );
-      return {
-        message: `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
-      };
+    const receiver = await db.query.users.findFirst({
+      where: eq(users.email, toEmail),
     });
+
+    if (!receiver) throw new Error("User not found");
+
+    const senderBalance = await db.query.balance.findFirst({
+      where: eq(balance.userId, user.id),
+    });
+
+    if (!senderBalance || senderBalance.amount < amount)
+      throw new Error("Insufficient balance");
+
+    const receiverBalance = await db.query.balance.findFirst({
+      where: eq(balance.userId, receiver.id),
+    });
+
+    await db
+      .update(balance)
+      .set({ amount: senderBalance.amount - amount })
+      .where(eq(balance.userId, user.id));
+
+    if (receiverBalance) {
+      await db
+        .update(balance)
+        .set({ amount: receiverBalance.amount + amount })
+        .where(eq(balance.userId, receiver.id));
+    } else {
+      await db.insert(balance).values({
+        amount: amount,
+        locked: 0,
+        userId: receiver.id,
+      });
+    }
+
+    await db.insert(p2pTransfer).values({
+      amount: amount,
+      timestamp: new Date(),
+      fromUserId: user.id,
+      toUserId: receiver.id,
+    });
+
+    await connection.query("COMMIT");
+
+    console.log(
+      `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
+    );
+    return {
+      message: `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
+    };
   } catch (e) {
+    await connection?.query("ROLLBACK");
     throw new Error(`Something went wrong: ${e}`);
+  } finally {
+    connection?.release();
   }
 };
 
