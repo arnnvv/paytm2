@@ -23,31 +23,36 @@ app.post("/hdfcWebhook", async (c: Context) => {
         ),
     });
 
-    if (!check) {
+    if (!check)
       return c.json({
         error: "Transaction is already processed",
         status: 400,
       });
-    }
 
-    connection = await pool.connect();
-    await connection.query("BEGIN");
+    if (check.status !== "Processing")
+      return c.json({
+        error: "Transaction is already processed",
+        status: 400,
+      });
 
     const existingBalance = await db.query.balance.findFirst({
       where: eq(balance.userId, userId),
     });
 
-    if (existingBalance)
-      await db
-        .update(balance)
-        .set({ amount: sql`${balance.amount} + ${numericAmount}` })
-        .where(eq(balance.userId, userId));
-    else
+    if (!existingBalance)
       await db.insert(balance).values({
         userId,
         amount: numericAmount,
         locked: 0,
       });
+
+    connection = await pool.connect();
+    await connection.query("BEGIN");
+
+    await db
+      .update(balance)
+      .set({ amount: sql`${balance.amount} + ${numericAmount}` })
+      .where(eq(balance.userId, userId));
 
     await db
       .update(onRampTransaction)
