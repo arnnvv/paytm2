@@ -33,10 +33,21 @@ app.post("/hdfcWebhook", async (c: Context) => {
     connection = await pool.connect();
     await connection.query("BEGIN");
 
-    await db
-      .update(balance)
-      .set({ amount: sql`${balance.amount} + ${numericAmount}` })
-      .where(eq(balance.userId, userId));
+    const existingBalance = await db.query.balance.findFirst({
+      where: eq(balance.userId, userId),
+    });
+
+    if (existingBalance)
+      await db
+        .update(balance)
+        .set({ amount: sql`${balance.amount} + ${numericAmount}` })
+        .where(eq(balance.userId, userId));
+    else
+      await db.insert(balance).values({
+        userId,
+        amount: numericAmount,
+        locked: 0,
+      });
 
     await db
       .update(onRampTransaction)
