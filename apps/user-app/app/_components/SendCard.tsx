@@ -10,9 +10,9 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { ChangeEvent, useState } from "react";
-import { toast } from "sonner";
 import { createP2PTransfer } from "../../actions";
 import { validatedEmail } from "@repo/validate/client";
+import { toast } from "@repo/ui/components/ui/sonner";
 
 export default (): JSX.Element => {
   const [email, setEmail] = useState<string>("");
