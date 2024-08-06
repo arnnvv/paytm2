@@ -170,14 +170,17 @@ export const createOnRampTransaction = async (
 export const createP2PTransfer = async (
   toEmail: string,
   amount: number,
-): Promise<{ message: string }> => {
+): Promise<
+  | { error: string; message?: undefined }
+  | { message: string; error?: undefined }
+> => {
   const { user } = await validateRequest();
   if (!user) throw new Error("User not found");
   const toExists = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.email, toEmail),
   });
-  if (!toExists) throw new Error("User not found");
-  if (toEmail === user.email) throw new Error("Cannot send money to yourself");
+  if (!toExists) return { error: "User not found" };
+  if (toEmail === user.email) return { error: "Cannot transfer to yourself" };
   let connection;
   try {
     connection = await pool.connect();
@@ -187,14 +190,14 @@ export const createP2PTransfer = async (
       where: eq(users.email, toEmail),
     });
 
-    if (!receiver) throw new Error("User not found");
+    if (!receiver) return { error: "User not found" };
 
     const senderBalance = await db.query.balance.findFirst({
       where: eq(balance.userId, user.id),
     });
 
     if (!senderBalance || senderBalance.amount < amount)
-      throw new Error("Insufficient balance");
+      return { error: "Insufficient funds" };
 
     const receiverBalance = await db.query.balance.findFirst({
       where: eq(balance.userId, receiver.id),
@@ -227,15 +230,12 @@ export const createP2PTransfer = async (
 
     await connection.query("COMMIT");
 
-    console.log(
-      `Successfully transferred ${amount / 100} from user ${user.email} to ${toEmail}`,
-    );
     return {
       message: `Successfully transferred ${amount / 100} from user ${user.email} to ${toEmail}`,
     };
   } catch (e) {
     await connection?.query("ROLLBACK");
-    throw new Error(`Something went wrong: ${e}`);
+    return { error: `Something went wrong: ${e}` };
   } finally {
     connection?.release();
   }

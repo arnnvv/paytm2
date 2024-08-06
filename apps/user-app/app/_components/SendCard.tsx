@@ -60,19 +60,41 @@ export default (): JSX.Element => {
                 if (isNaN(numAmount) || numAmount <= 0)
                   toast.error("Amount must be a positive number");
                 try {
-                  toast.success("Sending", {
+                  const result:
+                    | { error: string; message?: undefined }
+                    | { message: string; error?: undefined } =
+                    await createP2PTransfer(email, numAmount * 100);
+                  if ("error" in result)
+                    toast.error(result.error, {
+                      description: "PayTM",
+                      action: {
+                        label: "Undo",
+                        onClick: (): string | number =>
+                          toast.dismiss(result.error),
+                      },
+                    });
+                  else if ("message" in result)
+                    toast.success(result.message, {
+                      description: "PayTM",
+                      action: {
+                        label: "Undo",
+                        onClick: (): string | number =>
+                          toast.dismiss(result.message),
+                      },
+                    });
+                } catch (error) {
+                  toast.error("An error occurred while sending money", {
                     description: "PayTM",
                     action: {
                       label: "Undo",
-                      onClick: (): void => console.log("Undo"),
+                      onClick: (): string | number =>
+                        toast.dismiss("An error occurred while sending money"),
                     },
                   });
-                  await createP2PTransfer(email, numAmount * 100);
-                } catch (error) {
-                  toast.error("An error occurred while sending money");
                   return { error: "An error occurred while sending money" };
                 } finally {
-                  setAmount("0");
+                  setAmount("");
+                  setEmail("");
                 }
               }}
             >
