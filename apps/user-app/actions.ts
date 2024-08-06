@@ -228,10 +228,10 @@ export const createP2PTransfer = async (
     await connection.query("COMMIT");
 
     console.log(
-      `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
+      `Successfully transferred ${amount / 100} from user ${user.email} to ${toEmail}`,
     );
     return {
-      message: `Successfully transferred ${amount} from user ${user.email} to ${toEmail}`,
+      message: `Successfully transferred ${amount / 100} from user ${user.email} to ${toEmail}`,
     };
   } catch (e) {
     await connection?.query("ROLLBACK");

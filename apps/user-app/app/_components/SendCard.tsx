@@ -56,15 +56,15 @@ export default (): JSX.Element => {
                 if (!email || !amount) toast.error("enter email and amount");
                 const numAmount: number = Number(amount);
 
-                if (!validatedEmail(email)) toast("Invalid email format");
+                if (!validatedEmail(email)) toast.error("Invalid email format");
                 if (isNaN(numAmount) || numAmount <= 0)
                   toast.error("Amount must be a positive number");
                 try {
-                  toast("Sending", {
+                  toast.success("Sending", {
                     description: "PayTM",
                     action: {
                       label: "Undo",
-                      onClick: () => console.log("Undo"),
+                      onClick: (): void => console.log("Undo"),
                     },
                   });
                   await createP2PTransfer(email, numAmount * 100);

@@ -28,7 +28,7 @@ export default ({
         fontSans.variable,
       )}
     >
-      <Toaster />
+      <Toaster richColors />
       <AppbarComponent />
       {children}
     </body>
