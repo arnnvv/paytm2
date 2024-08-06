@@ -52,7 +52,7 @@ export const logInAction = async (
       sessionCookie.attributes,
     );
   } catch {
-    throw new Error("Something went wrong");
+    return { error: "Something went wrong" };
   }
   return redirect("/");
 };
@@ -91,7 +91,7 @@ export const signUpAction = async (
       sessionCookie.attributes,
     );
   } catch {
-    throw new Error("Unexpected error");
+    return { error: "Unexpected error" };
   }
   return redirect("/");
 };
