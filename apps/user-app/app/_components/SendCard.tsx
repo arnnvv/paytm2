@@ -12,6 +12,7 @@ import { Label } from "@repo/ui/components/ui/label";
 import { ChangeEvent, useState } from "react";
 import { toast } from "sonner";
 import { createP2PTransfer } from "../../actions";
+import { validatedEmail } from "@repo/validate/client";
 
 export default (): JSX.Element => {
   const [email, setEmail] = useState<string>("");
@@ -51,20 +52,27 @@ export default (): JSX.Element => {
             <Button
               className="w-full"
               type="submit"
-              onClick={async () => {
-                if (!email || !amount)
-                  return { error: "Please fill in all fields" };
+              onClick={async (): Promise<{ error: string } | undefined> => {
+                if (!email || !amount) toast.error("enter email and amount");
                 const numAmount: number = Number(amount);
 
-                if (!/\S+@\S+\.\S+/.test(email))
-                  toast.error("Invalid email format");
+                if (!validatedEmail(email)) toast("Invalid email format");
                 if (isNaN(numAmount) || numAmount <= 0)
                   toast.error("Amount must be a positive number");
                 try {
-                  toast.message("Sending");
+                  toast("Sending", {
+                    description: "PayTM",
+                    action: {
+                      label: "Undo",
+                      onClick: () => console.log("Undo"),
+                    },
+                  });
                   await createP2PTransfer(email, numAmount * 100);
                 } catch (error) {
+                  toast.error("An error occurred while sending money");
                   return { error: "An error occurred while sending money" };
+                } finally {
+                  setAmount("0");
                 }
               }}
             >

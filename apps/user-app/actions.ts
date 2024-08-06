@@ -167,13 +167,17 @@ export const createOnRampTransaction = async (
   }
 };
 
-export const createP2PTransfer = async (toEmail: string, amount: number) => {
+export const createP2PTransfer = async (
+  toEmail: string,
+  amount: number,
+): Promise<{ message: string }> => {
   const { user } = await validateRequest();
   if (!user) throw new Error("User not found");
   const toExists = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.email, toEmail),
   });
   if (!toExists) throw new Error("User not found");
+  if (toEmail === user.email) throw new Error("Cannot send money to yourself");
   let connection;
   try {
     connection = await pool.connect();
